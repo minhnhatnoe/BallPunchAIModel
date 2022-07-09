@@ -8,5 +8,5 @@ dataset_path = str(path.realpath(
 ))
 file_names = ["VID1"]
 test_size = 0.2
-kfold_nsplits = 100
+kfold_nsplits = 20
 batch_size = 256
