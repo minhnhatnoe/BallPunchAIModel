@@ -46,7 +46,7 @@ def split_append_array(total_img: NpyAppendArray, img: np.ndarray) -> None:
         total_img.append(img_batch)
 
 
-def get_path(filename: str) -> Tuple(str, str):
+def get_path(filename: str) -> 'Tuple(str, str)':
     return (
         path.join(dataset_path, f"{filename}_Extract.npy"),
         path.join(dataset_path, f"{filename}.npy")
