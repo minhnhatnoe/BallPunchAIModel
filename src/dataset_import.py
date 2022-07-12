@@ -1,11 +1,11 @@
 import os
 from os import path
+from typing import Tuple
 import numpy as np
 import torch
 from torchvision import transforms
 from npy_append_array import NpyAppendArray
 import config
-
 dataset_path = str(path.realpath(path.join(config.data_path, "RAW")))
 
 filenames = ["VID1", "VID3", "VID4", "VID5", "VID6"]
@@ -46,7 +46,7 @@ def split_append_array(total_img: NpyAppendArray, img: np.ndarray) -> None:
         total_img.append(img_batch)
 
 
-def get_path(filename: str) -> tuple[str, str]:
+def get_path(filename: str) -> Tuple(str, str):
     return (
         path.join(dataset_path, f"{filename}_Extract.npy"),
         path.join(dataset_path, f"{filename}.npy")
