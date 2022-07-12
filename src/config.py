@@ -1,7 +1,9 @@
 from os import path
 
-x_path = str(path.realpath(path.join(__file__, path.pardir, "image.npy")))
-y_path = str(path.realpath(path.join(__file__, path.pardir, "label.npy")))
+data_path = path.realpath(path.join(__file__, path.pardir, path.pardir, "data"))
+
+x_path = str(path.realpath(path.join(data_path, "image.npy")))
+y_path = str(path.realpath(path.join(data_path, "label.npy")))
 
 test_size = 0.2
 kfold_nsplits = 10

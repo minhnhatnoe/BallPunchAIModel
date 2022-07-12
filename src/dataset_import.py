@@ -6,11 +6,8 @@ from torchvision import transforms
 from npy_append_array import NpyAppendArray
 import config
 
-dataset_path = str(path.realpath(path.join(
-    __file__,
-    path.pardir, path.pardir, path.pardir,
-    "BallPunchAI", "Dataset", "data"
-)))
+dataset_path = str(path.realpath(path.join(config.data_path, "RAW")))
+
 filenames = ["VID1", "VID3", "VID4", "VID5", "VID6"]
 
 use_cuda = torch.cuda.is_available()
@@ -22,6 +19,7 @@ transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
 ])
+
 tensor_transform = transforms.ToTensor()
 
 def transform_array(img_batch: torch.FloatTensor) -> torch.FloatTensor:
