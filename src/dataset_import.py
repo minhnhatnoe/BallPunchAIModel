@@ -66,8 +66,8 @@ if __name__ == '__main__':
                 image_array = np.load(paths[0])
 
                 print(f"Processing {paths[0]}")
-                split_append_array(array_x, image_array[0:10])
+                split_append_array(array_x, image_array)
 
                 print(f"Loading {paths[1]}")
                 current_y = np.load(paths[1])
-                array_y.append(current_y[0:10])
+                array_y.append(current_y)
