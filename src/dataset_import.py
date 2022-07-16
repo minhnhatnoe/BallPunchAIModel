@@ -24,8 +24,7 @@ device = torch.device("cuda" if use_cuda else "cpu")
 
 '''Transformation list'''
 transform = transforms.Sequential([
-    transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
-    transforms.RandomHorizontalFlip()
+    transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
 ])
 
 def transform_array(image_batch: torch.FloatTensor) -> torch.FloatTensor:
@@ -53,7 +52,7 @@ def split_append_array(total_image: BigArray, image: np.ndarray) -> None:
         total_image.append(image_batch)
 
 
-def load_video(total_image: BigArray, video_name: str) -> None:
+def load_video(total_image: BigArray, video_name: str) -> int:
     image_path = path.join(dataset_path, "image", f"{video_name}_Extract.npy")
 
     print(f"Loading {video_name}")
@@ -62,17 +61,19 @@ def load_video(total_image: BigArray, video_name: str) -> None:
 
     print(f"Processing {video_name}")
     split_append_array(total_image, image_array)
+    return image_array.shape[0]
 
 
-def load_video_label(total_label: BigArray, video_name: str) -> None:
+def load_video_label(total_label: BigArray, video_name: str) -> int:
     label_path = path.join(dataset_path, "label", f"{video_name}.npy")
 
     print(f"Loading label {video_name}")
     label_array = np.load(label_path)
     assert(label_array.sum() * 3 < label_array.shape[0]) # Heuristic to ensure flipped
     total_label.append(label_array)
+    return label_array.shape[0]
 
-def image_folder_append(total_image: BigArray, image_paths):
+def image_folder_append(total_image: BigArray, image_paths) -> int:
     image_array = []
     batch_num = 1
     for image in image_paths:
@@ -89,15 +90,16 @@ def image_folder_append(total_image: BigArray, image_paths):
 
     image_array = np.array(image_array)
     split_append_array(total_image, image_array)
+    return image_array.shape[0]
 
 
-def load_image_folder(total_image: BigArray, folder_name: str) -> None:
+def load_image_folder(total_image: BigArray, folder_name: str) -> int:
     print(f"Loading {folder_name}")
     image_paths = glob(path.join(dataset_path, "image", folder_name, "*"))
     image_paths = sorted(image_paths)
-    image_folder_append(total_image, image_paths)
+    return image_folder_append(total_image, image_paths)
 
-def load_image_label(total_label: BigArray, folder_name: str) -> None:
+def load_image_label(total_label: BigArray, folder_name: str) -> int:
     label_path = path.join(dataset_path, "label", f"{folder_name}.csv")
     label_array = []
     print(f"Loading label {folder_name}")
@@ -111,19 +113,21 @@ def load_image_label(total_label: BigArray, folder_name: str) -> None:
             label_array.append(row[1] == '0') # The dataset is inverted
     label_array = np.array(label_array)
     total_label.append(label_array)
+    return label_array.shape[0]
 
-def load_image_tests(total_image: BigArray, folder_name: str) -> None:
+def load_image_tests(total_image: BigArray, folder_name: str) -> int:
     print(f"Loading {folder_name}")
     image_paths = glob(path.join(dataset_path, "test", folder_name, "*"))
     image_paths = sorted(image_paths)
-    image_folder_append(total_image, image_paths)
+    return image_folder_append(total_image, image_paths)
 
-def create_file_array(total_filename: BigArray, folder_name: str) -> None:
+def create_file_array(total_filename: BigArray, folder_name: str) -> int:
     print(f"Loading names of {folder_name}")
     image_paths = glob(path.join(dataset_path, "test", folder_name, "*"))
     image_paths = sorted(image_paths)
     image_paths = [str(path.basename(file_path)) for file_path in image_paths]
     total_filename.append(np.array(image_paths))
+    return len(image_paths)
 
 def load_punch(total_image: np.ndarray, total_label: np.ndarray) -> 'Tuple[np.ndarray, np.ndarray]':
     result_images = []
@@ -145,11 +149,13 @@ if __name__ == '__main__':
     with BigArray(config.x_path) as total_image:
         with BigArray(config.y_path) as total_label:
             for video_name in video_file_names:
-                load_video(total_image, video_name)
-                load_video_label(total_label, video_name)
+                x = load_video(total_image, video_name)
+                y = load_video_label(total_label, video_name)
+                assert(x == y)
             for folder_name in image_folder_names:
-                load_image_folder(total_image, folder_name)
-                load_image_label(total_label, folder_name)
+                x = load_image_folder(total_image, folder_name)
+                y = load_image_label(total_label, folder_name)
+                assert(x == y)
 
     punch_image, punch_label = load_punch(np.load(config.x_path), np.load(config.y_path))
     assert(punch_image.shape[0] == punch_label.shape[0])
@@ -169,5 +175,6 @@ if __name__ == '__main__':
     with BigArray(config.t_path) as total_image:
         with BigArray(config.n_path) as total_filename:
             for folder_name in test_folder_names:
-                load_image_tests(total_image, folder_name)
-                create_file_array(total_filename, folder_name)
+                x = load_image_tests(total_image, folder_name)
+                y = create_file_array(total_filename, folder_name)
+                assert(x == y)
