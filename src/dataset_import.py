@@ -53,10 +53,9 @@ def split_append_array(total_image: BigArray, image: np.ndarray) -> None:
 
 
 def load_video(total_image: BigArray, video_name: str) -> int:
-    image_path = path.join(dataset_path, "image", f"{video_name}_Extract.npy")
-
+    video_path = path.join(dataset_path, "image", f"{video_name}_Extract.npy")
     print(f"Loading {video_name}")
-    image_array = np.load(image_path)
+    image_array = np.load(video_path)
     assert((image_array.shape[1], image_array.shape[2]) == (224, 224))
 
     print(f"Processing {video_name}")
