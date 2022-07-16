@@ -27,7 +27,7 @@ transform = transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
 
 def transform_array(image_batch: torch.FloatTensor) -> torch.FloatTensor:
     '''Transform an array of image'''
-    image_batch = image_batch.to(device)
+    image_batch = image_batch.to(device, dtype=torch.float32)
     image_batch /= 255.0
     image_batch = transform(image_batch)
     image_batch = image_batch.cpu().detach()
