@@ -1,6 +1,7 @@
 import os
 from os import path
 from glob import glob
+from typing import Tuple
 import csv
 import cv2
 import numpy as np
@@ -53,7 +54,6 @@ def split_append_array(total_image: BigArray, image: np.ndarray) -> None:
 
 
 def load_video(total_image: BigArray, video_name: str) -> None:
-
     image_path = path.join(dataset_path, "image", f"{video_name}_Extract.npy")
 
     print(f"Loading {video_name}")
@@ -69,6 +69,7 @@ def load_video_label(total_label: BigArray, video_name: str) -> None:
 
     print(f"Loading label {video_name}")
     label_array = np.load(label_path)
+    assert(label_array.sum() * 3 < label_array.shape[0]) # Heuristic to ensure flipped
     total_label.append(label_array)
 
 def image_folder_append(total_image: BigArray, image_paths):
@@ -124,12 +125,13 @@ def create_file_array(total_filename: BigArray, folder_name: str) -> None:
     image_paths = [str(path.basename(file_path)) for file_path in image_paths]
     total_filename.append(np.array(image_paths))
 
-def load_punch(image: np.ndarray, label: np.ndarray) -> np.ndarray:
-    add = 0
-    for img, lbl in zip(image, label):
-        if lbl == 1:
-            add += 1
-    print(add)
+def load_punch(total_image: np.ndarray, total_label: np.ndarray) -> 'Tuple[np.ndarray, np.ndarray]':
+    result_images = []
+    for img, lbl in zip(total_image, total_label):
+        if lbl:
+            result_images.append(img)
+    return np.array(result_images), np.full(result_images.shape[0], 1)
+
 if __name__ == '__main__':
     if os.path.exists(config.x_path):
         os.remove(config.x_path)
@@ -148,10 +150,24 @@ if __name__ == '__main__':
             for folder_name in image_folder_names:
                 load_image_folder(total_image, folder_name)
                 load_image_label(total_label, folder_name)
-    punch_image = load_punch(np.load(config.x_path), np.load(config.y_path))
+
+    punch_image, punch_label = load_punch(np.load(config.x_path), np.load(config.y_path))
+    assert(punch_image.shape[0] == punch_label.shape[0])
+
+    total_count = np.load(config.y_path, mmap_mode='r').shape[0]
+    punch_count = punch_image.shape[0]
+
+    with BigArray(config.x_path) as total_image:
+        with BigArray(config.y_path) as total_label:
+            while total_count > punch_count * 2:
+                total_image.append(punch_image)
+                total_label.append(punch_label)
+
+                total_count += punch_image.shape[0]
+                punch_count += punch_image.shape[0]
+            
     with BigArray(config.t_path) as total_image:
         with BigArray(config.n_path) as total_filename:
             for folder_name in test_folder_names:
                 load_image_tests(total_image, folder_name)
                 create_file_array(total_filename, folder_name)
-
