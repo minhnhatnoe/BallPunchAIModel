@@ -111,6 +111,8 @@ if __name__ == '__main__':
         os.remove(config.x_path)
     if os.path.exists(config.y_path):
         os.remove(config.y_path)
+    if os.path.exists(config.t_path):
+        os.remove(config.y_path)
 
     with BigArray(config.x_path) as total_image:
         with BigArray(config.y_path) as total_label:
