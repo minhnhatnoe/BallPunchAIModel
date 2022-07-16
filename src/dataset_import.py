@@ -68,11 +68,7 @@ def load_video_label(total_label: BigArray, video_name: str) -> None:
     label_array = np.load(label_path)
     total_label.append(label_array)
 
-
-def load_image_folder(total_image: BigArray, folder_name: str) -> None:
-    print(f"Loading {folder_name}")
-    image_paths = glob(path.join(dataset_path, "image", folder_name, "*"))
-    image_paths = sorted(image_paths)
+def image_folder_append(total_image: BigArray, image_paths):
     image_array = []
     batch_num = 1
     for image in image_paths:
@@ -90,6 +86,13 @@ def load_image_folder(total_image: BigArray, folder_name: str) -> None:
     image_array = np.array(image_array)
     split_append_array(total_image, image_array)
 
+
+def load_image_folder(total_image: BigArray, folder_name: str) -> None:
+    print(f"Loading {folder_name}")
+    image_paths = glob(path.join(dataset_path, "image", folder_name, "*"))
+    image_paths = sorted(image_paths)
+    image_folder_append(total_image, image_paths)
+
 def load_image_label(total_label: BigArray, folder_name: str) -> None:
     label_path = path.join(dataset_path, "label", f"{folder_name}.csv")
     label_array = []
@@ -105,6 +108,18 @@ def load_image_label(total_label: BigArray, folder_name: str) -> None:
     label_array = np.array(label_array)
     total_label.append(label_array)
 
+def load_image_tests(total_image: BigArray, folder_name: str) -> None:
+    print(f"Loading {folder_name}")
+    image_paths = glob(path.join(dataset_path, "test", folder_name, "*"))
+    image_paths = sorted(image_paths)
+    image_folder_append(total_image, image_paths)
+
+def create_file_array(total_filename: BigArray, folder_name: str) -> None:
+    print(f"Loading names of {folder_name}")
+    image_paths = glob(path.join(dataset_path, "test", folder_name, "*"))
+    image_paths = sorted(image_paths)
+    image_paths = [str(path.basename(file_path)) for file_path in image_paths]
+    total_filename.append(np.array(image_paths))
 
 if __name__ == '__main__':
     if os.path.exists(config.x_path):
@@ -112,7 +127,9 @@ if __name__ == '__main__':
     if os.path.exists(config.y_path):
         os.remove(config.y_path)
     if os.path.exists(config.t_path):
-        os.remove(config.y_path)
+        os.remove(config.t_path)
+    if os.path.exists(config.n_path):
+        os.remove(config.n_path)
 
     with BigArray(config.x_path) as total_image:
         with BigArray(config.y_path) as total_label:
@@ -123,5 +140,7 @@ if __name__ == '__main__':
                 load_image_folder(total_image, folder_name)
                 load_image_label(total_label, folder_name)
     with BigArray(config.t_path) as total_image:
-        for folder_name in test_folder_names:
-            load_image_folder(total_image, folder_name)
+        with BigArray(config.n_path) as total_filename:
+            for folder_name in test_folder_names:
+                load_image_tests(total_image, folder_name)
+                create_file_array(total_filename, folder_name)
