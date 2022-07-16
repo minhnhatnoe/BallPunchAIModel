@@ -2,19 +2,22 @@ from os import path
 from torch import nn
 from torchvision.models import vgg16, VGG16_Weights
 
-data_path = path.realpath(path.join(__file__, path.pardir, path.pardir, "data"))
+src_path = path.join(__file__, path.pardir)
+data_path = path.join(src_path, path.pardir, "data")
 
 x_path = str(path.realpath(path.join(data_path, "image.npy")))
 y_path = str(path.realpath(path.join(data_path, "label.npy")))
 t_path = str(path.realpath(path.join(data_path, "tests.npy")))
 n_path = str(path.realpath(path.join(data_path, "names.npy")))
 
-model_path = str(path.realpath(path.join(__file__, path.pardir, "model_state_dict.pt")))
+model_path = str(path.realpath(path.join(src_path, "model_state_dict.pt")))
+result_path = str(path.realpath(path.join(src_path, "result.csv")))
+
 
 import_batch = 10000
 test_size = 0.2
 kfold_nsplits = 10
-kfold_nrepeats = 1
+kfold_nrepeats = 2
 batch_size = 32
 seed = 42
 
