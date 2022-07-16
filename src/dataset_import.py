@@ -13,6 +13,8 @@ dataset_path = str(path.realpath(path.join(config.data_path, "RAW")))
 video_file_names = ["VID1", "VID3", "VID4", "VID5", "VID6"]
 image_folder_names = ["video_10", "video_11", "video_20", "video_40",
                       "video_41", "video_60", "video_110", "video_120", "video_130"]
+test_folder_names = ["video_12", "video_20a", "video_20b", "video_40a", "video_42", 
+                      "video_60a", "video_111", "video_120a", "video_131"]
 
 use_cuda = torch.cuda.is_available()
 if not use_cuda:
@@ -118,3 +120,6 @@ if __name__ == '__main__':
             for folder_name in image_folder_names:
                 load_image_folder(total_image, folder_name)
                 load_image_label(total_label, folder_name)
+    with BigArray(config.t_path) as total_image:
+        for folder_name in test_folder_names:
+            load_image_folder(total_image, folder_name)
