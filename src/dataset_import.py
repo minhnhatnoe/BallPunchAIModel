@@ -1,7 +1,7 @@
 import os
 from os import path
 from glob import glob
-from typing import Tuple
+from typing import Tuple, List
 import csv
 import cv2
 import numpy as np
@@ -23,9 +23,7 @@ if not use_cuda:
 device = torch.device("cuda" if use_cuda else "cpu")
 
 '''Transformation list'''
-transform = transforms.Sequential([
-    transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
-])
+transform = transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
 
 def transform_array(image_batch: torch.FloatTensor) -> torch.FloatTensor:
     '''Transform an array of image'''
@@ -56,7 +54,7 @@ def load_video(total_image: BigArray, video_name: str) -> int:
     video_path = path.join(dataset_path, "image", f"{video_name}_Extract.npy")
     print(f"Loading {video_name}")
     image_array = np.load(video_path)
-    assert((image_array.shape[1], image_array.shape[2]) == (224, 224))
+    assert((image_array.shape[1], image_array.shape[2], image_array.shape[3]) == (224, 224, 3))
 
     print(f"Processing {video_name}")
     split_append_array(total_image, image_array)
@@ -72,8 +70,9 @@ def load_video_label(total_label: BigArray, video_name: str) -> int:
     total_label.append(label_array)
     return label_array.shape[0]
 
-def image_folder_append(total_image: BigArray, image_paths) -> int:
+def image_folder_append(total_image: BigArray, image_paths: 'List[str]') -> int:
     image_array = []
+    total_added = 0
     batch_num = 1
     for image in image_paths:
         img = cv2.imread(image)
@@ -82,14 +81,16 @@ def image_folder_append(total_image: BigArray, image_paths) -> int:
         if len(image_array) == config.batch_size:
             print(f"Processing batch {batch_num} of {folder_name}: ", end="")
             batch_num += 1
+            total_added += len(image_array)
             image_array = np.array(image_array)
             split_append_array(total_image, image_array)
             image_array = []
             print("Finished.")
 
+    total_added += len(image_array)
     image_array = np.array(image_array)
     split_append_array(total_image, image_array)
-    return image_array.shape[0]
+    return total_added
 
 
 def load_image_folder(total_image: BigArray, folder_name: str) -> int:
@@ -107,9 +108,10 @@ def load_image_label(total_label: BigArray, folder_name: str) -> int:
         first = True
         for row in reader:
             if first:
+                # Skips first line
                 first = False
                 continue
-            label_array.append(row[1] == '0') # The dataset is inverted
+            label_array.append(row[1] == '1')
     label_array = np.array(label_array)
     total_label.append(label_array)
     return label_array.shape[0]
@@ -133,7 +135,7 @@ def load_punch(total_image: np.ndarray, total_label: np.ndarray) -> 'Tuple[np.nd
     for img, lbl in zip(total_image, total_label):
         if lbl:
             result_images.append(img)
-    return np.array(result_images), np.full(result_images.shape[0], 1)
+    return np.array(result_images), np.full(len(result_images), 1, dtype=bool)
 
 if __name__ == '__main__':
     if os.path.exists(config.x_path):
@@ -162,6 +164,7 @@ if __name__ == '__main__':
     total_count = np.load(config.y_path, mmap_mode='r').shape[0]
     punch_count = punch_image.shape[0]
 
+    print(f"Adding more punches, since there are {punch_count} punch images/{total_count} images")
     with BigArray(config.x_path) as total_image:
         with BigArray(config.y_path) as total_label:
             while total_count > punch_count * 2:
@@ -170,7 +173,9 @@ if __name__ == '__main__':
 
                 total_count += punch_image.shape[0]
                 punch_count += punch_image.shape[0]
-            
+                print(f"{punch_count} punch images/{total_count} images")
+                print(f"Rate: {punch_count/total_count}")
+
     with BigArray(config.t_path) as total_image:
         with BigArray(config.n_path) as total_filename:
             for folder_name in test_folder_names:
