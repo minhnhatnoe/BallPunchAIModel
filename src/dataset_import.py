@@ -22,7 +22,10 @@ if not use_cuda:
 device = torch.device("cuda" if use_cuda else "cpu")
 
 '''Transformation list'''
-transform = transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
+transform = transforms.Sequential([
+    transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
+    transforms.RandomHorizontalFlip()
+])
 
 def transform_array(image_batch: torch.FloatTensor) -> torch.FloatTensor:
     '''Transform an array of image'''
@@ -121,6 +124,12 @@ def create_file_array(total_filename: BigArray, folder_name: str) -> None:
     image_paths = [str(path.basename(file_path)) for file_path in image_paths]
     total_filename.append(np.array(image_paths))
 
+def load_punch(image: np.ndarray, label: np.ndarray) -> np.ndarray:
+    add = 0
+    for img, lbl in zip(image, label):
+        if lbl == 1:
+            add += 1
+    print(add)
 if __name__ == '__main__':
     if os.path.exists(config.x_path):
         os.remove(config.x_path)
@@ -139,8 +148,10 @@ if __name__ == '__main__':
             for folder_name in image_folder_names:
                 load_image_folder(total_image, folder_name)
                 load_image_label(total_label, folder_name)
+    punch_image = load_punch(np.load(config.x_path), np.load(config.y_path))
     with BigArray(config.t_path) as total_image:
         with BigArray(config.n_path) as total_filename:
             for folder_name in test_folder_names:
                 load_image_tests(total_image, folder_name)
                 create_file_array(total_filename, folder_name)
+
