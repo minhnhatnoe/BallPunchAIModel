@@ -9,5 +9,5 @@ import_batch = 1000
 test_size = 0.2
 kfold_nsplits = 10
 kfold_nrepeats = 10
-batch_size = 256
+batch_size = 32
 seed = 42
