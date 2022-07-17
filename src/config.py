@@ -1,6 +1,6 @@
 from os import path
 from torch import nn
-from torchvision.models import vgg16, VGG16_Weights
+from torchvision.models import vgg16_bn, VGG16_BN_Weights
 
 src_path = path.join(__file__, path.pardir)
 data_path = path.join(src_path, path.pardir, "data")
@@ -18,11 +18,11 @@ import_batch = 10000
 test_size = 0.2
 kfold_nsplits = 10
 kfold_nrepeats = 2
-batch_size = 32
+batch_size = 256
 seed = 42
 
 def get_model() -> nn.Module:
-    model = vgg16(weights=VGG16_Weights.DEFAULT, progress=True)
+    model = vgg16_bn(weights=VGG16_BN_Weights.DEFAULT, progress=True)
     in_features = model.classifier[6].in_features
     model.classifier[6] = nn.Linear(in_features, 2)
     return model

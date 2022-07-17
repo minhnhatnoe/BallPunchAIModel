@@ -122,12 +122,19 @@ def load_image_tests(total_image: BigArray, folder_name: str) -> int:
     image_paths = sorted(image_paths)
     return image_folder_append(total_image, image_paths)
 
+def get_file_name(file_path: str, folder_name: str) -> str:
+    file_path = path.basename(file_path)
+    file_path = path.splitext(file_path)[0]
+    file_path = f"{folder_name}_{file_path}"
+    return str(file_path)
+
 def create_file_array(total_filename: BigArray, folder_name: str) -> int:
     print(f"Loading names of {folder_name}")
     image_paths = glob(path.join(dataset_path, "test", folder_name, "*"))
     image_paths = sorted(image_paths)
-    image_paths = [str(path.basename(file_path)) for file_path in image_paths]
-    total_filename.append(np.array(image_paths))
+    image_paths = [get_file_name(file_path, folder_name) for file_path in image_paths]
+    image_paths = np.array(image_paths, dtype='=U32')
+    total_filename.append(image_paths)
     return len(image_paths)
 
 def load_punch(total_image: np.ndarray, total_label: np.ndarray) -> 'Tuple[np.ndarray, np.ndarray]':
@@ -168,11 +175,18 @@ if __name__ == '__main__':
     with BigArray(config.x_path) as total_image:
         with BigArray(config.y_path) as total_label:
             while total_count > punch_count * 2:
-                total_image.append(punch_image)
-                total_label.append(punch_label)
+                added = 0
+                if punch_image.shape[0] > total_count - 2 * punch_count:
+                    added = total_count - 2*punch_count
+                    total_image.append(punch_image[:added])
+                    total_label.append(punch_label[:added])
+                else:
+                    added = punch_image.shape[0]
+                    total_image.append(punch_image)
+                    total_label.append(punch_label)
 
-                total_count += punch_image.shape[0]
-                punch_count += punch_image.shape[0]
+                total_count += added
+                punch_count += added
                 print(f"{punch_count} punch images/{total_count} images")
                 print(f"Rate: {punch_count/total_count}")
 
