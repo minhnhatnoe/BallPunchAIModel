@@ -8,7 +8,7 @@ import numpy as np
 import torch
 from torchvision import transforms
 from npy_append_array import NpyAppendArray as BigArray
-import config
+import settings.cfg
 
 dataset_path = str(path.realpath(path.join(config.data_path, "RAW")))
 video_file_names = ["VID1", "VID3", "VID4", "VID5", "VID6"]
@@ -148,17 +148,17 @@ if __name__ == '__main__':
         os.remove(config.x_path)
     if os.path.exists(config.y_path):
         os.remove(config.y_path)
-    # if os.path.exists(config.t_path):
-    #     os.remove(config.t_path)
-    # if os.path.exists(config.n_path):
-    #     os.remove(config.n_path)
+    if os.path.exists(config.t_path):
+        os.remove(config.t_path)
+    if os.path.exists(config.n_path):
+        os.remove(config.n_path)
 
     with BigArray(config.x_path) as total_image:
         with BigArray(config.y_path) as total_label:
-            # for video_name in video_file_names:
-            #     x = load_video(total_image, video_name)
-            #     y = load_video_label(total_label, video_name)
-            #     assert(x == y)
+            for video_name in video_file_names:
+                x = load_video(total_image, video_name)
+                y = load_video_label(total_label, video_name)
+                assert(x == y)
             for folder_name in image_folder_names:
                 x = load_image_folder(total_image, folder_name)
                 y = load_image_label(total_label, folder_name)
