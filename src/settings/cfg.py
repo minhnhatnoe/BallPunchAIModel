@@ -1,7 +1,7 @@
 from settings.modules import models, trans, loss, dev, data, optim, kf
 
 device = dev.device
-model = models.get_vgg11(True)
+model = models.get_custom()
 transforms = trans.get_random_transforms()
 criterion = loss.get_cross_entropy_loss()
 optimizer = optim.get_adam(model.parameters())
