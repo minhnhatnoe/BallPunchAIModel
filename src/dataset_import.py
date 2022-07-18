@@ -148,10 +148,10 @@ if __name__ == '__main__':
         os.remove(config.x_path)
     if os.path.exists(config.y_path):
         os.remove(config.y_path)
-    if os.path.exists(config.t_path):
-        os.remove(config.t_path)
-    if os.path.exists(config.n_path):
-        os.remove(config.n_path)
+    # if os.path.exists(config.t_path):
+    #     os.remove(config.t_path)
+    # if os.path.exists(config.n_path):
+    #     os.remove(config.n_path)
 
     with BigArray(config.x_path) as total_image:
         with BigArray(config.y_path) as total_label:
@@ -189,9 +189,9 @@ if __name__ == '__main__':
                 print(f"{punch_count} punch images/{total_count} images")
                 print(f"Rate: {punch_count/total_count}")
 
-    with BigArray(config.t_path) as total_image:
-        with BigArray(config.n_path) as total_filename:
-            for folder_name in test_folder_names:
-                x = load_image_tests(total_image, folder_name)
-                y = create_file_array(total_filename, folder_name)
-                assert(x == y)
+    # with BigArray(config.t_path) as total_image:
+    #     with BigArray(config.n_path) as total_filename:
+    #         for folder_name in test_folder_names:
+    #             x = load_image_tests(total_image, folder_name)
+    #             y = create_file_array(total_filename, folder_name)
+    #             assert(x == y)
