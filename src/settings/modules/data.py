@@ -16,7 +16,7 @@ tests_data = [
     get_real_path(data_path, "names.npy")
 ]
 
-output_path = get_real_path(parent_path, "result")
+output_path = get_real_path(parent_path, "results")
 
 model_path = get_real_path(output_path, "model_state_dict.pt")
 result_path = get_real_path(output_path, "result.csv")

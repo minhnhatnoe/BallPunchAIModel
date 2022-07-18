@@ -1,11 +1,11 @@
 from torch import nn
 from torchvision.models import vgg11_bn, vgg16_bn, VGG11_BN_Weights, VGG16_BN_Weights
-from dev import device
+from settings.modules.dev import device
 
 def get_vgg11(pretrained: bool) -> nn.Module:
     model: nn.Module
     if pretrained:
-        model = vgg11_bn(weights=VGG11_BN_Weights, progress=True)
+        model = vgg11_bn(weights=VGG11_BN_Weights.DEFAULT, progress=True)
     else:
         model = vgg11_bn()
     in_features = model.classifier[6].in_features
@@ -15,7 +15,7 @@ def get_vgg11(pretrained: bool) -> nn.Module:
 def get_vgg16(pretrained: bool) -> nn.Module:
     model: nn.Module
     if pretrained:
-        model = vgg16_bn(weights=VGG16_BN_Weights, progress=True)
+        model = vgg16_bn(weights=VGG16_BN_Weights.DEFAULT, progress=True)
     else:
         model = vgg16_bn()
     in_features = model.classifier[6].in_features

@@ -1,5 +1,5 @@
 from torch import nn
-from dev import device
+from settings.modules.dev import device
 
 def get_cross_entropy_loss() -> nn.CrossEntropyLoss:
     criterion = nn.CrossEntropyLoss()

@@ -1,9 +1,4 @@
-from modules import models, trans, loss, dev, data, optim, kf
-
-__all__ = ["device", "model", "transforms", "criterion", "optimizer",
-    "kfold", "idx_gen", "train_paths", "tests_paths", "output_paths",
-    "import_batch", "test_size", "batch_size"]
-
+from settings.modules import models, trans, loss, dev, data, optim, kf
 
 device = dev.device
 model = models.get_vgg11(True)

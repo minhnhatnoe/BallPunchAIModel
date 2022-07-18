@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 from torchvision import transforms
-from device import device
+from settings.modules.dev import device
 
 def get_random_transforms() -> nn.Sequential:
     random_rate = 0.5
