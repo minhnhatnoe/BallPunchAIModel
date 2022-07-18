@@ -17,17 +17,12 @@ image_folder_names = ["video_10", "video_11", "video_20", "video_40",
 test_folder_names = ["video_12", "video_20a", "video_20b", "video_40a", "video_42", 
                       "video_60a", "video_111", "video_120a", "video_131"]
 
-use_cuda = torch.cuda.is_available()
-if not use_cuda:
-    print("CUDA not used!")
-device = torch.device("cuda" if use_cuda else "cpu")
-
 '''Transformation list'''
 transform = transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
 
 def transform_array(image_batch: torch.FloatTensor) -> torch.FloatTensor:
     '''Transform an array of image'''
-    image_batch = image_batch.to(device, dtype=torch.float32)
+    image_batch = image_batch.to(config.device, dtype=torch.float32)
     image_batch /= 255.0
     image_batch = transform(image_batch)
     image_batch = image_batch.cpu().detach()
@@ -76,9 +71,11 @@ def image_folder_append(total_image: BigArray, image_paths: 'List[str]') -> int:
     batch_num = 1
     for image in image_paths:
         img = cv2.imread(image)
+        if np.isnan(img).sum() or img.shape[0] * img.shape[1] * img.shape[2] == 0:
+            print(image)
         img = cv2.resize(img, (224, 224))
         image_array.append(img)
-        if len(image_array) == config.batch_size:
+        if len(image_array) == config.import_batch:
             print(f"Processing batch {batch_num} of {folder_name}: ", end="")
             batch_num += 1
             total_added += len(image_array)
@@ -87,9 +84,11 @@ def image_folder_append(total_image: BigArray, image_paths: 'List[str]') -> int:
             image_array = []
             print("Finished.")
 
+    print(f"Processing last batch of {folder_name} ({len(image_array)} images): ", end="")
     total_added += len(image_array)
     image_array = np.array(image_array)
     split_append_array(total_image, image_array)
+    print("Finished.")
     return total_added
 
 
@@ -156,10 +155,10 @@ if __name__ == '__main__':
 
     with BigArray(config.x_path) as total_image:
         with BigArray(config.y_path) as total_label:
-            for video_name in video_file_names:
-                x = load_video(total_image, video_name)
-                y = load_video_label(total_label, video_name)
-                assert(x == y)
+            # for video_name in video_file_names:
+            #     x = load_video(total_image, video_name)
+            #     y = load_video_label(total_label, video_name)
+            #     assert(x == y)
             for folder_name in image_folder_names:
                 x = load_image_folder(total_image, folder_name)
                 y = load_image_label(total_label, folder_name)
