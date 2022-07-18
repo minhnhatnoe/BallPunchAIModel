@@ -8,9 +8,8 @@ import numpy as np
 import torch
 from torchvision import transforms
 from npy_append_array import NpyAppendArray as BigArray
-import settings.cfg
 
-dataset_path = str(path.realpath(path.join(config.data_path, "RAW")))
+dataset_path = ""
 video_file_names = ["VID1", "VID3", "VID4", "VID5", "VID6"]
 image_folder_names = ["video_10", "video_11", "video_20", "video_40",
                       "video_41", "video_60", "video_110", "video_120", "video_130"]

@@ -1,4 +1,5 @@
 import torch
 
-def get_adam() -> torch.optim.Adam:
-    return torch.optim.Adam()
+
+def get_adam(*args) -> torch.optim.Adam:
+    return torch.optim.Adam(*args).to
