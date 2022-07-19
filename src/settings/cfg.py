@@ -5,7 +5,7 @@ model = models.get_custom()
 transforms = trans.get_random_transforms()
 get_loss = loss.get_cross_entropy_loss
 optimizer = optim.get_adam(model.parameters())
-idx_gen = kf.get_kfold_class(split_count=10)
+idx_gen = kf.get_kfold_class(split_count=10, loop_count=2)
 
 train_paths = data.train_data_full
 tests_paths = data.tests_data
