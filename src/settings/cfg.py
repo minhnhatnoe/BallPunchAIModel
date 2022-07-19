@@ -3,7 +3,7 @@ from settings.modules import models, trans, loss, dev, data, optim, kf
 device = dev.device
 model = models.get_custom()
 transforms = trans.get_random_transforms()
-criterion = loss.get_cross_entropy_loss()
+get_loss = loss.get_cross_entropy_loss
 optimizer = optim.get_adam(model.parameters())
 idx_gen = kf.get_kfold_class(split_count=10, loop_count=2)
 

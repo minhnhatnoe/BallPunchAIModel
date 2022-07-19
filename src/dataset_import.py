@@ -161,17 +161,17 @@ if __name__ == '__main__':
         os.remove(cfg.train_paths[0])
     if os.path.exists(cfg.train_paths[1]):
         os.remove(cfg.train_paths[1])
-    # if os.path.exists(cfg.test_paths[0]):
-    #     os.remove(cfg.test_paths[0])
-    # if os.path.exists(cfg.test_paths[1]):
-    #     os.remove(cfg.test_paths[1])
+    if os.path.exists(cfg.test_paths[0]):
+        os.remove(cfg.test_paths[0])
+    if os.path.exists(cfg.test_paths[1]):
+        os.remove(cfg.test_paths[1])
 
     with BigArray(cfg.train_paths[0]) as total_image:
         with BigArray(cfg.train_paths[1]) as total_label:
-            # for video_name in video_file_names:
-            #     x = load_video(total_image, video_name)
-            #     y = load_video_label(total_label, video_name)
-            #     assert(x == y)
+            for video_name in video_file_names:
+                x = load_video(total_image, video_name)
+                y = load_video_label(total_label, video_name)
+                assert(x == y)
             for folder_name in image_folder_names:
                 x = load_image_folder(total_image, folder_name)
                 y = load_image_label(total_label, folder_name)
@@ -183,29 +183,29 @@ if __name__ == '__main__':
     total_count = np.load(cfg.train_paths[0], mmap_mode='r').shape[0]
     punch_count = punch_image.shape[0]
 
-    print(
-        f"Adding more punches, since there are {punch_count} punch images/{total_count} images")
-    with BigArray(cfg.train_paths[0]) as total_image:
-        with BigArray(cfg.train_paths[1]) as total_label:
-            while total_count > punch_count * 2:
-                added = 0
-                if punch_image.shape[0] > total_count - 2 * punch_count:
-                    added = total_count - 2*punch_count
-                    total_image.append(punch_image[:added])
-                    total_label.append(punch_label[:added])
-                else:
-                    added = punch_image.shape[0]
-                    total_image.append(punch_image)
-                    total_label.append(punch_label)
+    # print(
+    #     f"Adding more punches, since there are {punch_count} punch images/{total_count} images")
+    # with BigArray(cfg.train_paths[0]) as total_image:
+    #     with BigArray(cfg.train_paths[1]) as total_label:
+    #         while total_count > punch_count * 2:
+    #             added = 0
+    #             if punch_image.shape[0] > total_count - 2 * punch_count:
+    #                 added = total_count - 2*punch_count
+    #                 total_image.append(punch_image[:added])
+    #                 total_label.append(punch_label[:added])
+    #             else:
+    #                 added = punch_image.shape[0]
+    #                 total_image.append(punch_image)
+    #                 total_label.append(punch_label)
 
-                total_count += added
-                punch_count += added
-                print(f"{punch_count} punch images/{total_count} images")
-                print(f"Rate: {punch_count/total_count}")
+    #             total_count += added
+    #             punch_count += added
+    #             print(f"{punch_count} punch images/{total_count} images")
+    #             print(f"Rate: {punch_count/total_count}")
 
-    # with BigArray(config.t_path) as total_image:
-    #     with BigArray(config.n_path) as total_filename:
-    #         for folder_name in test_folder_names:
-    #             x = load_image_tests(total_image, folder_name)
-    #             y = create_file_array(total_filename, folder_name)
-    #             assert(x == y)
+    with BigArray(config.t_path) as total_image:
+        with BigArray(config.n_path) as total_filename:
+            for folder_name in test_folder_names:
+                x = load_image_tests(total_image, folder_name)
+                y = create_file_array(total_filename, folder_name)
+                assert(x == y)
