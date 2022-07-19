@@ -10,9 +10,7 @@ def get_random_transforms() -> nn.Sequential:
         transforms.ColorJitter(brightness=random_rate, contrast=random_rate, saturation=random_rate, hue=random_rate),
         transforms.RandomResizedCrop((224, 224), (0.8, 0.8), ratio=(1, 1)),
         transforms.RandomHorizontalFlip(random_rate),
-        transforms.RandomVerticalFlip(random_rate),
-        transforms.RandomRotation((-90 * random_rate, +90 * random_rate)),
-        transforms.RandomPerspective(random_rate, random_rate)
+        transforms.RandomVerticalFlip(random_rate)
     )
     random_transforms = random_transforms.to(device)
     return random_transforms

@@ -30,4 +30,4 @@ output_path = get_real_path(parent_path, "results")
 model_path = get_real_path(output_path, "model_state_dict.pt")
 result_path = get_real_path(output_path, "result.csv")
 
-kaggle_path = get_real_path(parent_path, ".kaggle")
+kaggle_path = get_real_path(parent_path, "src", )

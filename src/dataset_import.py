@@ -13,9 +13,8 @@ from helper import loader
 
 dataset_path = cfg.raw_dataset_path
 video_file_names = ["VID1", "VID3", "VID4", "VID5", "VID6"]
-# image_folder_names = ["video_10", "video_11", "video_20", "video_40",
-#                       "video_41", "video_60", "video_110", "video_120", "video_130"]
-image_folder_names = ["video_10"]
+image_folder_names = ["video_10", "video_11", "video_20", "video_40",
+                      "video_41", "video_60", "video_110", "video_120", "video_130"]
 test_folder_names = ["video_12", "video_20a", "video_20b", "video_40a", "video_42",
                      "video_60a", "video_111", "video_120a", "video_131"]
 
@@ -161,10 +160,10 @@ if __name__ == '__main__':
         os.remove(cfg.train_paths[0])
     if os.path.exists(cfg.train_paths[1]):
         os.remove(cfg.train_paths[1])
-    if os.path.exists(cfg.test_paths[0]):
-        os.remove(cfg.test_paths[0])
-    if os.path.exists(cfg.test_paths[1]):
-        os.remove(cfg.test_paths[1])
+    if os.path.exists(cfg.tests_paths[0]):
+        os.remove(cfg.tests_paths[0])
+    if os.path.exists(cfg.tests_paths[1]):
+        os.remove(cfg.tests_paths[1])
 
     with BigArray(cfg.train_paths[0]) as total_image:
         with BigArray(cfg.train_paths[1]) as total_label:
@@ -203,8 +202,8 @@ if __name__ == '__main__':
     #             print(f"{punch_count} punch images/{total_count} images")
     #             print(f"Rate: {punch_count/total_count}")
 
-    with BigArray(config.t_path) as total_image:
-        with BigArray(config.n_path) as total_filename:
+    with BigArray(cfg.tests_paths[0]) as total_image:
+        with BigArray(cfg.tests_paths[1]) as total_filename:
             for folder_name in test_folder_names:
                 x = load_image_tests(total_image, folder_name)
                 y = create_file_array(total_filename, folder_name)
