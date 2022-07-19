@@ -44,22 +44,22 @@ class NoeNet(nn.Module):
         self.grayscale = transforms.Grayscale()
 
         self.increase = nn.Sequential(
-            self.conv(  1,  32), nn.ReLU(),
-            self.conv( 32,  64), nn.ReLU(), self.mxpool(),
-            self.conv( 64, 512), nn.ReLU(), self.mxpool()
+            self.conv(  1,  32), nn.ReLU(), self.mxpool(),
+            self.conv( 32,  64), nn.ReLU(), self.mxpool()
+            # self.conv( 64, 512), nn.ReLU(), self.mxpool()
         )
 
         self.steady = nn.Sequential(
-            self.conv(512, 512), nn.ReLU(), self.mxpool(),
-            self.conv(512, 512), nn.ReLU(), self.mxpool()
+            self.conv(64, 64), nn.ReLU(), self.mxpool(),
+            self.conv(64, 64), nn.ReLU(), self.mxpool()
+            # self.conv(512, 512), nn.ReLU(), self.mxpool()
         )
 
         self.avgpool = nn.AvgPool2d(2, 2)
 
         self.classifier = nn.Sequential(
-            self.lin(512 * 7 * 7, 1024), nn.ReLU(), self.drop(),
-            self.lin(1024, 1024), nn.ReLU(), self.drop(),
-            self.lin(1024, 256), nn.ReLU(), self.drop(),
+            self.lin(64 * 7 * 7, 256), nn.ReLU(), self.drop(),
+            self.lin(256, 256), nn.ReLU(), self.drop(),
             self.lin(256, 2)
         )
 
@@ -68,7 +68,7 @@ class NoeNet(nn.Module):
         x = self.increase(x)
         x = self.steady(x)
         x = self.avgpool(x)
-        x = x.reshape(-1, 512 * 7 * 7)
+        x = x.reshape(-1, 64 * 7 * 7)
         x = self.classifier(x)
         return x
 

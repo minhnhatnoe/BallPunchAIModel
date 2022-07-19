@@ -6,6 +6,7 @@ def get_real_path(*args) -> str:
 parent_path = get_real_path(__file__, pardir, pardir, pardir, pardir)
 
 data_path = get_real_path(parent_path, "data")
+raw_dataset_path = get_real_path(data_path, "RAW")
 
 train_data = [
     get_real_path(data_path, "image.npy"),
@@ -14,6 +15,10 @@ train_data = [
 train_data_full = [
     get_real_path(data_path, "image_full.npy"),
     get_real_path(data_path, "label_full.npy")
+]
+train_data_part = [
+    get_real_path(data_path, "image_part.npy"),
+    get_real_path(data_path, "label_part.npy")
 ]
 tests_data = [
     get_real_path(data_path, "tests.npy"),
@@ -24,3 +29,5 @@ output_path = get_real_path(parent_path, "results")
 
 model_path = get_real_path(output_path, "model_state_dict.pt")
 result_path = get_real_path(output_path, "result.csv")
+
+kaggle_path = get_real_path(parent_path, ".kaggle")

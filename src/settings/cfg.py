@@ -7,11 +7,13 @@ criterion = loss.get_cross_entropy_loss()
 optimizer = optim.get_adam(model.parameters())
 idx_gen = kf.get_kfold_class(split_count=10, loop_count=2)
 
-train_paths = data.train_data
+train_paths = data.train_data_part
 tests_paths = data.tests_data
 model_path = data.model_path
 result_path = data.result_path
+kaggle_path = data.kaggle_path
+raw_dataset_path = data.raw_dataset_path
 
-import_batch = 10000
+import_batch = 1000
 test_size = 0.2
-batch_size = 64
+batch_size = 32

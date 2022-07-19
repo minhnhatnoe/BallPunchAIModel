@@ -1,5 +1,7 @@
 import torch
 from torch import nn
+from torchvision import transforms
+from PIL import Image
 
 def print_model_size(model: nn.Module):
     param_size = 0
@@ -17,3 +19,9 @@ def print_model_size(model: nn.Module):
 def print_tensor_size(tensor: torch.Tensor):
     size_gb = tensor.element_size() * tensor.nelement() / (1<<30)
     print(f"{size_gb:.3f}GB")
+
+def print_image(tensor: torch.Tensor):
+    trans = transforms.ToPILImage()
+    for img in tensor:
+        im = trans(img)
+        im.show()
