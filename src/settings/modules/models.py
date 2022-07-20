@@ -21,10 +21,10 @@ def get_vgg11(pretrained: bool) -> Tuple[nn.Module, str]:
 def get_vgg16(pretrained: bool) -> Tuple[nn.Module, str]:
     model: nn.Module
     if pretrained:
-        name = "vgg11_bn_pr"
+        name = "vgg16_bn_pr"
         model = vgg16_bn(weights=VGG16_BN_Weights.DEFAULT, progress=True)
     else:
-        name = "vgg11_bn_sc"
+        name = "vgg16_bn_sc"
         model = vgg16_bn()
     in_features = model.classifier[6].in_features
     model.classifier[6] = nn.Linear(in_features, 2)
