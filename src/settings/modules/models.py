@@ -1,9 +1,9 @@
 from typing import Tuple
 import torch
-from torch import convolution, nn
+from torch import nn
 from torchvision import transforms
 from torchvision.models import vgg11_bn, vgg16_bn, VGG11_BN_Weights, VGG16_BN_Weights
-from settings.modules.dev import device
+from settings.modules.utils import device
 
 def get_vgg11(pretrained: bool) -> Tuple[nn.Module, str]:
     model: nn.Module

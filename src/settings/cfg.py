@@ -1,22 +1,70 @@
+from os import path
 import random
-from sklearn.model_selection import RepeatedKFold
-from settings.modules import models, trans, loss, dev, data, optim, kf
+import numpy as np
+import torch
+from settings.modules import models, data, utils
+from helper import loader, debug, boilerplate
+
 
 random.seed(42)
 
-device = dev.device
-model, model_name = models.get_vgg16(True)
-transforms = trans.get_random_transforms()
-get_loss = loss.get_cross_entropy_loss
-optimizer = optim.get_adam(model.parameters())
+class TrainConfig:
+    def __load_model(self) -> None:
+        self.model, self.__model_name = models.get_vgg16(True)
+        self.optimizer = utils.get_adam(self.model.parameters())
 
-def get_idx_gen() -> RepeatedKFold:
-    return kf.get_kfold_class(split_count=10, loop_count=10, seed=random.randint(0, 1000))
+        self.__model_path = data.get_model_path(self.__model_name)
+        if path.exists(self.__model_path):
+            loader.load_model(self.model, self.optimizer, self.__model_path)
+        
+        debug.print_model_size(self.model)
 
-train_paths = data.train_data_full
+    def __load_data(self) -> None:
+        self.dataset_image, self.dataset_label = \
+            loader.load_data(self.__data_path, mmap_mode='c')
+
+    def __load_transforms(self) -> None:
+        self.transforms = utils.get_random_transforms()
+
+    def __load_loss(self) -> None:
+        hit = self.dataset_label.sum()
+        self.data_class = (self.dataset_label.shape[0] - hit, hit)
+        print(f'''Stats:
+        | Number of not-punching: {self.data_class[0]}
+        | Number of punching: {self.data_class[1]}''')
+
+        self.criterion = utils.get_cross_entropy_loss(self.data_class)
+
+    def get_split(self):
+        split_generator = utils.get_kfold_class(
+            10, 10, random.randint(0, 1000))
+        return split_generator.split(self.dataset_image)
+
+    def __init__(self,
+                 train_paths: str = data.train_data_full,
+                 batch_size: int = 32) -> None:
+        self.device = utils.device
+        self.batch_size = batch_size
+        self.__data_path = train_paths
+        self.__load_model()
+        self.__load_data()
+        self.__load_transforms()
+        self.__load_loss()
+        
+    def save_checkpoint(self) -> None:
+        data.save_model(self.model, self.optimizer, self.__model_path)
+    
+    def get_dataloader(self, indices: np.ndarray) -> None:
+        data = boilerplate.TrainingDataset(
+            self.dataset_image, self.dataset_label, indices)
+        return torch.utils.data.DataLoader(
+            data, batch_size=self.batch_size, shuffle=True)
+
+    def load_best(self) -> None:
+        loader.load_model(self.model, None, self.__model_path)
+
+
 tests_paths = data.tests_data
-
-model_path = data.get_model_path(model_name)
 result_path = data.result_path
 
 kaggle_path = data.kaggle_path
@@ -24,6 +72,5 @@ raw_dataset_path = data.raw_dataset_path
 
 import_batch = 1000
 test_size = 0.2
-batch_size = 32
 
 early_stop = 4

@@ -1,7 +1,9 @@
 from os.path import join, pardir, realpath
 
+
 def get_real_path(*args) -> str:
     return str(realpath(join(*args)))
+
 
 parent_path = get_real_path(__file__, pardir, pardir, pardir, pardir)
 
@@ -27,8 +29,11 @@ tests_data = [
 
 output_path = get_real_path(parent_path, "results")
 
+
 def get_model_path(model_name: str) -> str:
     return get_real_path(output_path, f"{model_name}_state_dict.pt")
+
+
 result_path = get_real_path(output_path, "result.csv")
 
 kaggle_path = get_real_path(parent_path, "src", "helper")
