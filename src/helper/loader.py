@@ -23,8 +23,3 @@ def load_model(mode: nn.Module, optimizer: torch.optim.Adam | None, path: str) -
     mode.load_state_dict(checkpoint['model_state_dict'])
     if optimizer is not None:
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-
-
-def to_device(data: 'List[torch.Tensor]', device: torch.device) -> None:
-    data[0] = data[0].to(device, dtype=torch.float)
-    data[1] = data[1].to(device, dtype=torch.uint8)
