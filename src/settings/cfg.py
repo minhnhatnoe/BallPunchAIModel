@@ -8,6 +8,7 @@ from helper import loader, debug, boilerplate
 
 random.seed(42)
 
+
 class TrainConfig:
     def __load_model(self) -> None:
         self.model, self.__model_name = models.get_vgg16(True)
@@ -16,7 +17,7 @@ class TrainConfig:
         self.__model_path = data.get_model_path(self.__model_name)
         if path.exists(self.__model_path):
             loader.load_model(self.model, self.optimizer, self.__model_path)
-        
+
         debug.print_model_size(self.model)
 
     def __load_data(self) -> None:
@@ -50,10 +51,10 @@ class TrainConfig:
         self.__load_data()
         self.__load_transforms()
         self.__load_loss()
-        
+
     def save_checkpoint(self) -> None:
-        data.save_model(self.model, self.optimizer, self.__model_path)
-    
+        loader.save_model(self.model, self.optimizer, self.__model_path)
+
     def get_dataloader(self, indices: np.ndarray) -> None:
         data = boilerplate.TrainingDataset(
             self.dataset_image, self.dataset_label, indices)
