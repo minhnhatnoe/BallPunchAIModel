@@ -1,12 +1,8 @@
 from os import path
-import random
 import numpy as np
 import torch
 from settings.modules import models, data, utils
 from helper import loader, debug, boilerplate
-
-
-random.seed(42)
 
 class TrainConfig:
     def __load_model(self) -> None:
@@ -36,8 +32,7 @@ class TrainConfig:
         self.criterion = utils.get_cross_entropy_loss(self.data_class)
 
     def get_split(self):
-        split_generator = utils.get_kfold_class(
-            10, 10, random.randint(0, 1000))
+        split_generator = utils.get_kfold_class(10, 10)
         return split_generator.split(self.dataset_image)
 
     def __init__(self,

@@ -2,9 +2,17 @@ import csv
 from os import environ
 from datetime import datetime
 import torch
-from tqdm import tqdm
 from helper import loader, boilerplate
 from settings.cfg import tests_paths, result_path, kaggle_path, TrainConfig
+
+def submit(config: TrainConfig) -> None:
+    ...
+
+if __name__ == '__main__':
+    from tqdm import tqdm
+    submit(TrainConfig())
+else:
+    from tqdm.notebook import tqdm
 
 def submit(config: TrainConfig) -> None:
     test_image, test_names = loader.load_data(tests_paths, mmap_mode='c')
@@ -27,17 +35,10 @@ def submit(config: TrainConfig) -> None:
             
             result_writer.writerows(zip(names, output))
 
-    choice = input("Do you want to submit the result? ([y]/n)")
-    if choice == "y" or choice == "":
-        print("Uploading results")
-        environ['KAGGLE_CONFIG_DIR'] = kaggle_path
-        from kaggle.api.kaggle_api_extended import KaggleApi
-        api = KaggleApi()
-        api.authenticate()
-        api.competition_submit(
-            result_path, f"Submitted at {datetime.now()}", "hsgs-hackathon2022")
-    else:
-        print("Upload aborted")
-
-if __name__ == '__main__':
-    submit(TrainConfig())
+    print("Uploading results")
+    environ['KAGGLE_CONFIG_DIR'] = kaggle_path
+    from kaggle.api.kaggle_api_extended import KaggleApi
+    api = KaggleApi()
+    api.authenticate()
+    api.competition_submit(
+        result_path, f"Submitted at {datetime.now()}", "hsgs-hackathon2022")

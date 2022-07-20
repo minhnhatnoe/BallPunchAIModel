@@ -10,9 +10,8 @@ if not use_cuda:
 device = torch.device("cuda" if use_cuda else "cpu")
 
 
-def get_kfold_class(split_count: int, loop_count: int, seed: int) -> RepeatedKFold:
-    return RepeatedKFold(
-        n_splits=split_count, n_repeats=loop_count, random_state=seed)
+def get_kfold_class(split_count: int, loop_count: int) -> RepeatedKFold:
+    return RepeatedKFold(n_splits=split_count, n_repeats=loop_count)
 
 
 def get_random_transforms() -> nn.Sequential:
