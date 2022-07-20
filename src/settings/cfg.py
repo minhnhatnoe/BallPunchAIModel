@@ -8,7 +8,6 @@ from helper import loader, debug, boilerplate
 
 random.seed(42)
 
-
 class TrainConfig:
     def __load_model(self) -> None:
         self.model, self.__model_name = models.get_vgg16(True)

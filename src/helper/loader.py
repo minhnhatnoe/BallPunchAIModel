@@ -25,6 +25,6 @@ def load_model(mode: nn.Module, optimizer: torch.optim.Adam | None, path: str) -
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 
 
-def to_device(image: torch.Tensor, label: torch.Tensor, device: torch.device) -> None:
-    image = image.to(device, dtype=torch.float)
-    label = label.to(device, dtype=torch.uint8)
+def to_device(data: 'List[torch.Tensor]', device: torch.device) -> None:
+    data[0] = data[0].to(device, dtype=torch.float)
+    data[1] = data[1].to(device, dtype=torch.uint8)
