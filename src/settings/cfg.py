@@ -32,7 +32,7 @@ class TrainConfig:
         self.criterion = utils.get_cross_entropy_loss(self.data_class)
 
     def get_split(self):
-        split_generator = utils.get_kfold_class(10, 10)
+        split_generator = utils.get_kfold_class(10, 1000)
         return split_generator.split(self.dataset_image)
 
     def __init__(self,
@@ -68,4 +68,5 @@ raw_dataset_path = data.raw_dataset_path
 import_batch = 1000
 test_size = 0.2
 
-early_stop = 4
+des_sequence_early_stop = 5
+early_stop = 10
