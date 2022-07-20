@@ -8,8 +8,7 @@ class TrainingDataset(Dataset):
         assert(image.shape[0] == label.shape[0])
         self.image = image
         self.label = label
-        self.indices = indices.copy()
-        np.random.shuffle(self.indices)
+        self.indices = indices
         
     
     def __len__(self) -> int:

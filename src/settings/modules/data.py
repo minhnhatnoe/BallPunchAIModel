@@ -27,7 +27,8 @@ tests_data = [
 
 output_path = get_real_path(parent_path, "results")
 
-model_path = get_real_path(output_path, "model_state_dict.pt")
+def get_model_path(model_name: str) -> str:
+    return get_real_path(output_path, f"{model_name}_state_dict.pt")
 result_path = get_real_path(output_path, "result.csv")
 
-kaggle_path = get_real_path(parent_path, "src", )
+kaggle_path = get_real_path(parent_path, "src", "helper")

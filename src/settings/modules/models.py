@@ -1,30 +1,34 @@
-from typing import List
+from typing import Tuple
 import torch
 from torch import convolution, nn
 from torchvision import transforms
 from torchvision.models import vgg11_bn, vgg16_bn, VGG11_BN_Weights, VGG16_BN_Weights
 from settings.modules.dev import device
 
-def get_vgg11(pretrained: bool) -> nn.Module:
+def get_vgg11(pretrained: bool) -> Tuple[nn.Module, str]:
     model: nn.Module
+    name: str
     if pretrained:
+        name = "vgg11_bn_pr"
         model = vgg11_bn(weights=VGG11_BN_Weights.DEFAULT, progress=True)
     else:
+        name = "vgg11_bn_sc"
         model = vgg11_bn()
     in_features = model.classifier[6].in_features
     model.classifier[6] = nn.Linear(in_features, 2)
-    print(model)
-    return model.to(device)
+    return (model.to(device), name)
 
-def get_vgg16(pretrained: bool) -> nn.Module:
+def get_vgg16(pretrained: bool) -> Tuple[nn.Module, str]:
     model: nn.Module
     if pretrained:
+        name = "vgg11_bn_pr"
         model = vgg16_bn(weights=VGG16_BN_Weights.DEFAULT, progress=True)
     else:
+        name = "vgg11_bn_sc"
         model = vgg16_bn()
     in_features = model.classifier[6].in_features
     model.classifier[6] = nn.Linear(in_features, 2)
-    return model.to(device)
+    return (model.to(device), name)
 
 class NoeNet(nn.Module):
     def conv(cls, inc: int, outc: int) -> nn.Conv2d:
@@ -46,12 +50,14 @@ class NoeNet(nn.Module):
         self.increase = nn.Sequential(
             self.conv(  1,  32), nn.ReLU(), self.mxpool(),
             self.conv( 32,  64), nn.ReLU(),
-            self.conv( 64, 512), nn.ReLU(), self.mxpool()
+            self.conv( 64, 128), nn.ReLU(), self.mxpool(),
+            self.conv(128, 256), nn.ReLU(),
+            self.conv(256, 512), nn.ReLU(), self.mxpool()
         )
 
         self.steady = nn.Sequential(
-            self.conv(512, 512), nn.ReLU(), self.mxpool(),
             self.conv(512, 512), nn.ReLU(),
+            # self.conv(512, 512), nn.ReLU(),
             self.conv(512, 512), nn.ReLU(), self.mxpool()
         )
 
@@ -72,5 +78,5 @@ class NoeNet(nn.Module):
         x = self.classifier(x)
         return x
 
-def get_custom() -> nn.Module:
-    return NoeNet().to(device)
+def get_custom() -> Tuple[nn.Module, str]:
+    return (NoeNet().to(device), "custom")

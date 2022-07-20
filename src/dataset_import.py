@@ -12,7 +12,8 @@ from settings import cfg
 from helper import loader
 
 dataset_path = cfg.raw_dataset_path
-video_file_names = ["VID1", "VID3", "VID4", "VID5", "VID6"]
+# video_file_names = ["VID1", "VID3", "VID4", "VID5", "VID6"]
+video_file_names = ["VID3", "VID4", "VID5", "VID6"]
 image_folder_names = ["video_10", "video_11", "video_20", "video_40",
                       "video_41", "video_60", "video_110", "video_120", "video_130"]
 test_folder_names = ["video_12", "video_20a", "video_20b", "video_40a", "video_42",
