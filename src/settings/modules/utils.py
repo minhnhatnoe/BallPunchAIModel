@@ -24,6 +24,8 @@ def get_random_transforms() -> nn.Sequential:
     )
     return random_transforms.to(device)
 
+def get_grayscale_transform() -> transforms.Compose:
+    return transforms.Grayscale(3).to(device)
 
 def get_adam(*args, **kwargs) -> torch.optim.Adam:
     return torch.optim.Adam(*args, **kwargs)

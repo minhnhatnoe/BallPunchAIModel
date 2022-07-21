@@ -7,12 +7,16 @@ from helper import loader, debug, boilerplate
 class TrainConfig:
     def __load_model(self) -> None:
         self.model, self.__model_name = models.get_vgg16(True)
+        if self.use_grayscale:
+            self.__model_name += '_gs'
         self.optimizer = utils.get_adam(self.model.parameters())
 
         self.__model_path = data.get_model_path(self.__model_name)
         if path.exists(self.__model_path):
+            print(f"Resuming from {self.__model_path}")
             loader.load_model(self.model, self.optimizer, self.__model_path)
-
+        else:
+            print(f"Creating new model at {self.__model_path}")
         debug.print_model_size(self.model)
 
     def __load_data(self) -> None:
@@ -21,13 +25,14 @@ class TrainConfig:
 
     def __load_transforms(self) -> None:
         self.transforms = utils.get_random_transforms()
+        if self.use_grayscale:
+            self.grayscale = utils.get_grayscale_transform()
 
     def __load_loss(self) -> None:
         hit = self.dataset_label.sum()
         self.data_class = (self.dataset_label.shape[0] - hit, hit)
         print(f'''Stats:
-        | Number of not-punching: {self.data_class[0]}
-        | Number of punching: {self.data_class[1]}''')
+        | Number of not-punching: {self.data_class[0]} \t| Number of punching: {self.data_class[1]}''')
 
         self.criterion = utils.get_cross_entropy_loss(self.data_class)
 
@@ -37,9 +42,11 @@ class TrainConfig:
 
     def __init__(self,
                  train_paths: str = data.train_data_full,
-                 batch_size: int = 32) -> None:
+                 batch_size: int = 32,
+                 use_grayscale: bool = True) -> None:
         self.device = utils.device
         self.batch_size = batch_size
+        self.use_grayscale = use_grayscale
         self.__data_path = train_paths
         self.__load_model()
         self.__load_data()

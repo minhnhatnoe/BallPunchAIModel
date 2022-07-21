@@ -6,15 +6,6 @@ from helper import loader, boilerplate
 from settings.cfg import tests_paths, result_path, kaggle_path, TrainConfig
 
 def submit(config: TrainConfig) -> None:
-    ...
-
-if __name__ == '__main__':
-    from tqdm import tqdm
-    submit(TrainConfig())
-else:
-    from tqdm.notebook import tqdm
-
-def submit(config: TrainConfig) -> None:
     test_image, test_names = loader.load_data(tests_paths, mmap_mode='c')
     Data = boilerplate.ExportDataset
     tests = Data(test_image, test_names)
@@ -28,7 +19,8 @@ def submit(config: TrainConfig) -> None:
         result_writer.writerow(["Frame", "Label"])
         for image, names in tqdm(tests_dataloader):
             image = image.to(config.device, dtype=torch.float)
-
+            if config.use_grayscale:
+                image = config.grayscale(image)
             output = config.model(image)
             output = output.argmax(dim=1).cpu().numpy()
             assert(output.shape[0] == len(names))
@@ -42,3 +34,9 @@ def submit(config: TrainConfig) -> None:
     api.authenticate()
     api.competition_submit(
         result_path, f"Submitted at {datetime.now()}", "hsgs-hackathon2022")
+
+if __name__ == '__main__':
+    from tqdm import tqdm
+    submit(TrainConfig())
+else:
+    from tqdm import tqdm
