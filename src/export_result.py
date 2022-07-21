@@ -39,4 +39,4 @@ if __name__ == '__main__':
     from tqdm import tqdm
     submit(TrainConfig())
 else:
-    from tqdm import tqdm
+    from tqdm.notebook import tqdm
