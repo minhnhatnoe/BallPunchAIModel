@@ -8,9 +8,11 @@ typedef long double ld;
 signed main(){
     cin.tie(0)->sync_with_stdio(0);
     freopen("data.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
     pair<string, ld> tmp;
     vector<pair<string, ld>> a;
     while (cin >> tmp.first >> tmp.second){
-        
+        a.push_back(move(tmp));
     }
+
 }
