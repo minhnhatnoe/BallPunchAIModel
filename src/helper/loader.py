@@ -23,3 +23,4 @@ def load_model(mode: nn.Module, optimizer: torch.optim.Adam | None, path: str) -
     mode.load_state_dict(checkpoint['model_state_dict'])
     if optimizer is not None:
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+
