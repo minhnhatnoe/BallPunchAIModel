@@ -6,10 +6,10 @@ from helper import loader, debug, boilerplate
 
 class TrainConfig:
     def __load_model(self) -> None:
-        self.model, self.__model_name = models.get_vgg16(True)
+        self.model, self.__model_name = models.get_vgg11(True)
         if self.use_grayscale:
             self.__model_name += '_gs'
-        self.optimizer = utils.get_adam(self.model.parameters())
+        self.optimizer = utils.get_adam(self.model.parameters(), lr=0.01)
 
         self.__model_path = data.get_model_path(self.__model_name)
         if path.exists(self.__model_path):
@@ -43,7 +43,7 @@ class TrainConfig:
     def __init__(self,
                  train_paths: str = data.train_data_full,
                  batch_size: int = 32,
-                 use_grayscale: bool = True) -> None:
+                 use_grayscale: bool = False) -> None:
         self.device = utils.device
         self.batch_size = batch_size
         self.use_grayscale = use_grayscale

@@ -4,7 +4,7 @@ from datetime import datetime
 import torch
 from helper import loader, boilerplate
 from settings.cfg import tests_paths, result_path, kaggle_path, TrainConfig
-from src.helper.final_heuristics import heuristics
+from helper.final_heuristics import heuristics
 
 
 def upload() -> None:
@@ -32,6 +32,7 @@ def submit(config: TrainConfig) -> None:
         result_writer.writerow(["Frame", "Label"])
         names = []
         for image, names in tqdm(tests_dataloader):
+            image = image.clone()
             image = image.to(config.device, dtype=torch.float)
             if config.use_grayscale:
                 image = config.grayscale(image)
@@ -42,14 +43,14 @@ def submit(config: TrainConfig) -> None:
             result_writer.writerows(zip(names, output))
 
     upload()
-    print(f"Performing heuristic evaluation")
-    heuristics.transform(result_path, data)
-    upload()
-    print("Done")
+    # print(f"Performing heuristic evaluation")
+    # heuristics.transform(result_path, data)
+    # upload()
+    # print("Done")
 
 
 if __name__ == '__main__':
     from tqdm import tqdm
     submit(TrainConfig())
 else:
-    from tqdm.notebook import tqdm
+    from tqdm import tqdm
