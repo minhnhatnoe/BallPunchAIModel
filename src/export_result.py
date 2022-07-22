@@ -31,8 +31,8 @@ def submit(config: TrainConfig) -> None:
         result_writer = csv.writer(result)
         result_writer.writerow(["Frame", "Label"])
         names = []
-        for image, names in tqdm(tests_dataloader):
-            image = image.clone()
+        for image_temp, names in tqdm(tests_dataloader):
+            image = image_temp.clone()
             image = image.to(config.device, dtype=torch.float)
             if config.use_grayscale:
                 image = config.grayscale(image)
