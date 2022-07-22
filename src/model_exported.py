@@ -35,8 +35,8 @@ def train(train_idx: np.ndarray) -> 'Tuple(float, float)':
 
     prediction_array = []
     label_array = []
-    for image, label in tqdm(train_dataloader):
-        image = image.clone()
+    for image_temp, label in tqdm(train_dataloader):
+        image = image_temp.clone()
         image = image.to(config.device, dtype=torch.float)
         image = config.transforms(image)
         if config.use_grayscale:
