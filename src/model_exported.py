@@ -78,8 +78,8 @@ def judge(judge_idx: np.ndarray) -> 'Tuple(float, float)':
     prediction_array = []
     label_array = []
     with torch.no_grad():
-        for image, label in tqdm(judge_dataloader):
-            image = image.clone()
+        for image_temp, label in tqdm(judge_dataloader):
+            image = image_temp.clone()
             image = image.to(config.device, dtype=torch.float)
             if config.use_grayscale:
                 image = config.grayscale(image)
