@@ -1,12 +1,14 @@
+from typing import Tuple
 from os import path
 import numpy as np
 import torch
-from settings.modules import models, data, utils
+from torch import nn
+from settings.modules import data, utils
 from helper import loader, debug, boilerplate
 
 class TrainConfig:
-    def __load_model(self) -> None:
-        self.model, self.__model_name = models.get_vgg11(True)
+    def __load_model(self, model_settings: Tuple[nn.Module, str]) -> None:
+        self.model, self.__model_name = model_settings
         if self.use_grayscale:
             self.__model_name += '_gs'
         self.optimizer = utils.get_adam(self.model.parameters(), lr=0.01)
@@ -41,6 +43,7 @@ class TrainConfig:
         return split_generator.split(self.dataset_image)
 
     def __init__(self,
+                 model_settings: Tuple[nn.Module, str],
                  train_paths: str = data.train_data_full,
                  batch_size: int = 32,
                  use_grayscale: bool = False) -> None:
@@ -48,7 +51,7 @@ class TrainConfig:
         self.batch_size = batch_size
         self.use_grayscale = use_grayscale
         self.__data_path = train_paths
-        self.__load_model()
+        self.__load_model(model_settings)
         self.__load_data()
         self.__load_transforms()
         self.__load_loss()

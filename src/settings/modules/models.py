@@ -2,7 +2,7 @@ from typing import Tuple
 import torch
 from torch import nn
 from torchvision import transforms
-from torchvision.models import vgg11_bn, vgg16_bn, googlenet, alexnet, VGG11_BN_Weights, VGG16_BN_Weights, GoogLeNet_Weights, AlexNet_Weights
+from torchvision.models import vgg11_bn, vgg11, vgg16_bn, googlenet, alexnet, VGG11_BN_Weights, VGG11_Weights, VGG16_BN_Weights, GoogLeNet_Weights, AlexNet_Weights
 from settings.modules.utils import device
 
 
@@ -44,6 +44,19 @@ def get_vgg11(pretrained: bool) -> Tuple[nn.Module, str]:
     in_features = model.classifier[6].in_features
     model.classifier[6] = nn.Linear(in_features, 2)
     return (model.to(device), name)
+
+def get_vgg11_wbn(pretrained: bool) -> Tuple[nn.Module, str]:
+    model: nn.Module
+    name: str
+    if pretrained:
+        name = "vgg11_wbn_pr"
+        model = vgg11(weights=VGG11_Weights.DEFAULT, progress=True)
+    else:
+        raise NotImplementedError("Who asked")
+    in_features = model.classifier[6].in_features
+    model.classifier[6] = nn.Linear(in_features, 2)
+    return (model.to(device), name)
+
 
 def get_vgg16(pretrained: bool) -> Tuple[nn.Module, str]:
     model: nn.Module

@@ -2,9 +2,10 @@ import csv
 from os import environ
 from datetime import datetime
 import torch
+from tqdm import tqdm
 from helper import loader, boilerplate
 from settings.cfg import tests_paths, result_path, kaggle_path, TrainConfig
-from helper.final_heuristics import heuristics
+from settings.modules import models
 
 
 def upload() -> None:
@@ -43,14 +44,11 @@ def submit(config: TrainConfig) -> None:
             result_writer.writerows(zip(names, output))
 
     upload()
-    # print(f"Performing heuristic evaluation")
-    # heuristics.transform(result_path, data)
-    # upload()
-    # print("Done")
-
 
 if __name__ == '__main__':
-    from tqdm import tqdm
-    submit(TrainConfig())
-else:
-    from tqdm import tqdm
+    # submit(TrainConfig(models.get_googlenet(True)))
+    config = TrainConfig(models.get_googlenet(True))
+    config.model = models.get_vgg11()
+    config.model = torch.("/home/phuonghd/NHAT/BallPunchAIModel/results/legacy/model_state_dict_old.pt")
+
+

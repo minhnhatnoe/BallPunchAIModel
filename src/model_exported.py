@@ -4,28 +4,25 @@
 
 # %%
 from typing import Tuple
-from os.path import exists
 import torch
 import numpy as np
 from tqdm import tqdm
-from torch.utils.data import DataLoader
+from sklearn.metrics import f1_score
 from settings import cfg
-from helper import loader
 import export_result
-
+from settings.modules import models
 
 # %% [markdown]
 # # Load everything
 
 # %%
-config = cfg.TrainConfig()
+config = cfg.TrainConfig(models.get_vgg16(True))
 
 
 # %% [markdown]
 # # Train
 
 # %%
-from sklearn.metrics import f1_score
 
 
 def train(train_idx: np.ndarray) -> 'Tuple(float, float)':
@@ -42,7 +39,6 @@ def train(train_idx: np.ndarray) -> 'Tuple(float, float)':
         if config.use_grayscale:
             image = config.grayscale(image)
         output = config.model(image)
-        print(output)
 
         label = label.to(config.device, dtype=torch.uint8)
         batch_loss = config.criterion(output, label)
