@@ -11,16 +11,16 @@ def load_data(paths: 'List[str, str]', *args, **kwargs) -> 'List[np.ndarray, np.
     return data
 
 
-def save_model(mode: nn.Module, optimizer: torch.optim.Adam, path: str) -> None:
+def save_model(model: nn.Module, optimizer: torch.optim.Adam, path: str) -> None:
     torch.save({
-        'model_state_dict': mode.state_dict(),
+        'model_state_dict': model.state_dict(),
         'optimizer_state_dict': optimizer.state_dict()
     }, path)
 
 
-def load_model(mode: nn.Module, optimizer: torch.optim.Adam | None, path: str) -> None:
+def load_model(model: nn.Module, optimizer: torch.optim.Adam | None, path: str) -> None:
     checkpoint = torch.load(path)
-    mode.load_state_dict(checkpoint['model_state_dict'])
+    model.load_state_dict(checkpoint['model_state_dict'])
     if optimizer is not None:
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 

@@ -8,12 +8,12 @@ from helper import loader, debug, boilerplate
 
 class TrainConfig:
     def __load_model(self, model_settings: Tuple[nn.Module, str]) -> None:
-        self.model, self.__model_name = model_settings
+        self.model, self.model_name = model_settings
         if self.use_grayscale:
-            self.__model_name += '_gs'
-        self.optimizer = utils.get_adam(self.model.parameters(), lr=0.01)
+            self.model_name += '_gs'
+        self.optimizer = utils.get_adam(self.model.parameters())
 
-        self.__model_path = data.get_model_path(self.__model_name)
+        self.__model_path = data.get_model_path(self.model_name)
         if path.exists(self.__model_path):
             print(f"Resuming from {self.__model_path}")
             loader.load_model(self.model, self.optimizer, self.__model_path)
@@ -68,7 +68,8 @@ class TrainConfig:
     def load_best(self) -> None:
         loader.load_model(self.model, None, self.__model_path)
 
-
+device = utils.device
+train_paths = data.train_data_full
 tests_paths = data.tests_data
 result_path = data.result_path
 

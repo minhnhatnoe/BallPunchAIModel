@@ -1,6 +1,6 @@
 # %% [markdown]
 # # Import everything
-# 
+#
 
 # %%
 from typing import Tuple
@@ -61,8 +61,8 @@ def train(train_idx: np.ndarray) -> 'Tuple(float, float)':
     f1_score_train = f1_score(label_array, prediction_array, average='macro')
 
     return (total_loss_train/train_idx.shape[0],
-        total_accuracy_train/train_idx.shape[0],
-        f1_score_train)
+            total_accuracy_train/train_idx.shape[0],
+            f1_score_train)
 
 
 # %%
@@ -96,8 +96,9 @@ def judge(judge_idx: np.ndarray) -> 'Tuple(float, float)':
     f1_score_judge = f1_score(label_array, prediction_array, average='macro')
 
     return (total_loss_judge/judge_idx.shape[0],
-        total_accuracy_judge/judge_idx.shape[0],
-        f1_score_judge)
+            total_accuracy_judge/judge_idx.shape[0],
+            f1_score_judge)
+
 
 # %%
 min_loss_judge = float('inf')
@@ -153,6 +154,3 @@ for epoch, (train_idx, judge_idx) in enumerate(config.get_split()):
         print(f'''Not submitting:
     | F1 Score: {f1_score_judge:.3f} | Last Submit: {last_submit:.3f}''')
     print("\n____________________________________________")
-
-
-

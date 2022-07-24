@@ -12,8 +12,7 @@ from settings import cfg
 from helper import loader
 
 dataset_path = cfg.raw_dataset_path
-# video_file_names = ["VID1", "VID3", "VID4", "VID5", "VID6"]
-video_file_names = ["VID3", "VID4", "VID5", "VID6"]
+video_file_names = ["VID1", "VID3", "VID4", "VID5"]
 image_folder_names = ["video_10", "video_11", "video_20", "video_40",
                       "video_41", "video_60", "video_110", "video_120", "video_130"]
 test_folder_names = ["video_12", "video_20a", "video_20b", "video_40a", "video_42",
@@ -182,26 +181,6 @@ if __name__ == '__main__':
 
     total_count = np.load(cfg.train_paths[0], mmap_mode='r').shape[0]
     punch_count = punch_image.shape[0]
-
-    # print(
-    #     f"Adding more punches, since there are {punch_count} punch images/{total_count} images")
-    # with BigArray(cfg.train_paths[0]) as total_image:
-    #     with BigArray(cfg.train_paths[1]) as total_label:
-    #         while total_count > punch_count * 2:
-    #             added = 0
-    #             if punch_image.shape[0] > total_count - 2 * punch_count:
-    #                 added = total_count - 2*punch_count
-    #                 total_image.append(punch_image[:added])
-    #                 total_label.append(punch_label[:added])
-    #             else:
-    #                 added = punch_image.shape[0]
-    #                 total_image.append(punch_image)
-    #                 total_label.append(punch_label)
-
-    #             total_count += added
-    #             punch_count += added
-    #             print(f"{punch_count} punch images/{total_count} images")
-    #             print(f"Rate: {punch_count/total_count}")
 
     with BigArray(cfg.tests_paths[0]) as total_image:
         with BigArray(cfg.tests_paths[1]) as total_filename:

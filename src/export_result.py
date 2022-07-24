@@ -5,17 +5,16 @@ import torch
 from tqdm import tqdm
 from helper import loader, boilerplate
 from settings.cfg import tests_paths, result_path, kaggle_path, TrainConfig
-from settings.modules import models
 
 
-def upload() -> None:
+def upload(name: str) -> None:
     print("Uploading results")
     environ['KAGGLE_CONFIG_DIR'] = kaggle_path
     from kaggle.api.kaggle_api_extended import KaggleApi
     api = KaggleApi()
     api.authenticate()
     api.competition_submit(
-        result_path, f"Submitted at {datetime.now()}", "hsgs-hackathon2022")
+        result_path, f"Submitted at {datetime.now()} by {name}", "hsgs-hackathon2022")
 
 
 def submit(config: TrainConfig) -> None:
@@ -43,12 +42,10 @@ def submit(config: TrainConfig) -> None:
             data.extend(zip(names, output))
             result_writer.writerows(zip(names, output))
 
-    upload()
+    upload(config.model_name)
 
-if __name__ == '__main__':
-    # submit(TrainConfig(models.get_googlenet(True)))
-    config = TrainConfig(models.get_googlenet(True))
-    config.model = models.get_vgg11()
-    config.model = torch.("/home/phuonghd/NHAT/BallPunchAIModel/results/legacy/model_state_dict_old.pt")
-
-
+# if __name__ == '__main__':
+#     model = models.get_vgg16(True)[0]
+#     config = TrainConfig([model, "vgg11bn_blank"])
+#     config.model.load_state_dict(torch.load("./results/legacy/vgg16_bn_pr_state_dict.pt"))
+#     submit(config)
