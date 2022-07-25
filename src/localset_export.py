@@ -13,8 +13,11 @@ def write_file(images: np.ndarray, label: np.ndarray, img_path: str, label_path:
         writer = csv.writer(csv_file)
         writer.writerow(["Frame", "Label"])
         for img, lbl in zip(images, label):
-            cv2.imwrite(f"{img_path}_{cnt: 06}.png", img)
-            writer.writerow([f"{img_path}_{cnt}.png", str(lbl)])
+            img_name = f"frame_{cnt:06d}.png"
+            if cnt == 0:
+                print(str(os.path.join(img_path, img_name)))
+            cv2.imwrite(str(os.path.join(img_path, img_name)), img)
+            writer.writerow([img_name, str(int(lbl))])
             cnt += 1
 
 
@@ -26,6 +29,7 @@ for name in video_file_names:
     label = np.load(label_path, mmap_mode = "r")
 
     image_folder_write = str(path.realpath(path.join(dataset_path, "export", name)))
-    label_write_path = str(path.realpath(path.join(dataset_path, "label", f"{name}.csv")))
+    label_write_path = str(path.realpath(path.join(dataset_path, "label_export", f"{name}.csv")))
+    print(image_folder_write)
     write_file(images, label, image_folder_write, label_write_path)
     print(f"{name} done")
