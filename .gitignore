@@ -1,6 +1,6 @@
 data
 venv
 *.pyc
-*.pt
 *.csv
 .kaggle
+*.zip
