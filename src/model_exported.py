@@ -16,7 +16,7 @@ from settings.modules import models
 # # Load everything
 
 # %%
-config = cfg.TrainConfig(models.get_vgg16(True))
+config = cfg.TrainConfig(models.get_googlenet(True))
 
 
 # %% [markdown]

@@ -4,3 +4,4 @@ venv
 *.csv
 .kaggle
 *.zip
+*.png

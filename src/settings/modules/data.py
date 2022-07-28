@@ -26,7 +26,10 @@ tests_data = [
     get_real_path(data_path, "tests.npy"),
     get_real_path(data_path, "names.npy")
 ]
-
+final_tests = [
+    get_real_path(data_path, "tests_last.npy"),
+    get_real_path(data_path, "names_last.npy")
+]
 output_path = get_real_path(parent_path, "results")
 
 

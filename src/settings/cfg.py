@@ -70,7 +70,7 @@ class TrainConfig:
 
 device = utils.device
 train_paths = data.train_data_full
-tests_paths = data.tests_data
+tests_paths = data.final_tests
 result_path = data.result_path
 
 kaggle_path = data.kaggle_path

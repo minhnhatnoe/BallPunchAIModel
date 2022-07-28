@@ -5,6 +5,7 @@ import torch
 from tqdm import tqdm
 from helper import loader, boilerplate
 from settings.cfg import tests_paths, result_path, kaggle_path, TrainConfig
+from settings.modules import models
 
 
 def upload(name: str) -> None:
@@ -42,10 +43,8 @@ def submit(config: TrainConfig) -> None:
             data.extend(zip(names, output))
             result_writer.writerows(zip(names, output))
 
-    upload(config.model_name)
+    # upload(config.model_name)
 
-# if __name__ == '__main__':
-#     model = models.get_vgg16(True)[0]
-#     config = TrainConfig([model, "vgg11bn_blank"])
-#     config.model.load_state_dict(torch.load("./results/legacy/vgg16_bn_pr_state_dict.pt"))
-#     submit(config)
+if __name__ == '__main__':
+    config = TrainConfig(models.get_googlenet(True))
+    submit(config)
